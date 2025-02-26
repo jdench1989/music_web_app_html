@@ -7,13 +7,16 @@ def test_get_all_albums(db_connection, page, test_web_address):
     page.goto(f"{test_web_address}/albums")
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Albums")
-    album_container = page.locator("div.album-container")
-    expect(album_container).to_contain_text("" \
-        "Title: Doolittle\n" \
-        "Released: 1989\n" \
-        "Title: Surfer Rosa\n" \
-        "Released: 1988" \
-    )
+    h2_tags = page.locator("h2")
+    expect(h2_tags).to_have_text([
+        "Title: Doolittle",
+        "Title: Surfer Rosa",
+    ])
+    p_tags = page.locator("p")
+    expect(p_tags).to_have_text([
+        "Released: 1989",
+        "Released: 1988"
+    ])
 
 def test_post_albums_any_fields_missing(db_connection, web_client):
     db_connection.seed("seeds/music_library.sql")
@@ -53,15 +56,18 @@ def test_post_albums_valid_entry(db_connection, web_client, page, test_web_addre
     page.goto(f"{test_web_address}/albums")
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Albums")
-    album_container = page.locator("div.album-container")
-    expect(album_container).to_contain_text("" \
-        "Title: Doolittle\n" \
-        "Released: 1989\n" \
-        "Title: Surfer Rosa\n" \
-        "Released: 1988\n" \
-        "Title: Voyage\n" \
+    h2_tags = page.locator("h2")
+    expect(h2_tags).to_have_text([
+        "Title: Doolittle",
+        "Title: Surfer Rosa",
+        "Title: Voyage"
+    ])
+    p_tags = page.locator("p")
+    expect(p_tags).to_have_text([
+        "Released: 1989",
+        "Released: 1988",
         "Released: 2022"
-    )
+    ])
         
 def test_get_artists(db_connection, web_client):
     db_connection.seed("seeds/music_library.sql")
