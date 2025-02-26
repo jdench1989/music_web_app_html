@@ -13,9 +13,8 @@ app = Flask(__name__)
 def get_all_albums():
     connection = get_flask_database_connection(app)
     repository = AlbumRepository(connection)
-    albums = repository.all()
-    return Response(response="\n".join([f"{album}" for album in albums]),
-                        status=200)
+    albums = [album for album in repository.all()]
+    return render_template("albums.html", albums=albums)
 
 @app.route('/albums', methods=['POST'])
 def create_album():
