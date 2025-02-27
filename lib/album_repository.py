@@ -36,8 +36,11 @@ class AlbumRepository():
         album = Album(row[0]["id"], row[0]["title"], row[0]["release_year"], row[0]["artist_id"], row[0]["artist"])
         return album
     
-    def create(self, title, release_year, artist_id):
-        self._connection.execute("INSERT INTO albums (title, release_year, artist_id) VALUES (%s, %s, %s)", [title, release_year, artist_id])
+    def create(self, album):
+        rows = self._connection.execute("INSERT INTO albums (title, release_year, artist_id) VALUES (%s, %s, %s) RETURNING id", [album.title, album.release_year, album.artist_id])
+        row = rows[0]
+        album.id = row['id']
+        return album
 
     def delete(self, album_id):
         self._connection.execute("DELETE FROM albums WHERE id = %s", [album_id])

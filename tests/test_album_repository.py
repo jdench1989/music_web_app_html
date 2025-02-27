@@ -38,10 +38,11 @@ def test_find_single_album_by_id(db_connection):
 When we call AlbumRepository.create()
 A new album is added to the database
 """
-def test_create_method_adds_record_to_dataabse(db_connection):
+def test_create_method_adds_record_to_database(db_connection):
     db_connection.seed("seeds/music_library.sql")
     repository = AlbumRepository(db_connection)
-    repository.create("Voyage", 2021, 2)
+    album = Album(None, "Voyage", 2022, 2, None)
+    repository.create(album)
     albums = repository.all()
     assert len(albums) == 3
     assert albums[-1].title == "Voyage"

@@ -45,3 +45,29 @@ def test_albums_with_identical_properties_are_equal():
     album1 = Album(1, "Test title", 1999, 1, "Test artist")
     album2 = Album(1, "Test title", 1999, 1, "Test artist")
     assert album1 == album2
+    
+"""
+We can assess a Album for validity
+"""
+def test_Album_validity():
+    assert Album(1, "", "", "").is_valid() == False
+    assert Album(1, "Title", "", "").is_valid() == False
+    assert Album(1, "", 2022, "").is_valid() == False
+    assert Album(1, "", "", 1).is_valid() == False
+    assert Album(1, "Title", 2022, 2, "Artist").is_valid() == True
+    assert Album(None, "Title", 2022, 2, None).is_valid() == True
+
+"""
+We can generate errors for an invalid Album
+"""
+def test_Album_errors():
+    assert Album(1, "Title", "2022", "").generate_errors() == "Artist ID can't be blank"
+    assert Album(1, "Title", "", "2").generate_errors() == "Release year can't be blank"
+    assert Album(1, "", "2022", "2").generate_errors() == "Title can't be blank"
+    assert Album(1, "", "", "").generate_errors() == "Title can't be blank, Release year can't be blank, Artist ID can't be blank"
+    assert Album(1, "Title", "2022", None).generate_errors() == "Artist ID can't be blank"
+    assert Album(1, "Title", None, "2").generate_errors() == "Release year can't be blank"
+    assert Album(1, None, "2022", "2").generate_errors() == "Title can't be blank"
+    assert Album(1, None, None, None).generate_errors() == "Title can't be blank, Release year can't be blank, Artist ID can't be blank"
+    assert Album(1, "Title", "2022", "2").generate_errors() == None
+    assert Album(None, "Title", "2022", "2", None).generate_errors() == None
