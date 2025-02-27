@@ -13,12 +13,14 @@ def test_album_instantiates_with_correct_properties():
         - The album's title should be "Test title".
         - The album's release_year should be 1999.
         - The album's artist_id should be 1.
+        - The albums's artist should be "Test artist"
     """
-    album = Album(1, "Test title", 1999, 1)
+    album = Album(1, "Test title", 1999, 1, "Test artist")
     assert album.id == 1
     assert album.title == "Test title"
     assert album.release_year == 1999
     assert album.artist_id == 1
+    assert album.artist == "Test artist"
 
 def test_albums_represented_nicely_as_strings():
     """
@@ -28,10 +30,10 @@ def test_albums_represented_nicely_as_strings():
     if its string representation matches the expected format.
 
     Assertions:
-        str(album) == "Album(1, Test title, 1999, 1)"
+        str(album) == "Album(1, Test title, 1999, 1, Test artist)"
     """
-    album = Album(1, "Test title", 1999, 1)
-    assert str(album) == "Album(1, Test title, 1999, 1)"
+    album = Album(1, "Test title", 1999, 1, "Test artist")
+    assert str(album) == "Album(1, Test title, 1999, 1, Test artist)"
 
 def test_albums_with_identical_properties_are_equal():
     """
@@ -40,6 +42,6 @@ def test_albums_with_identical_properties_are_equal():
     This test creates two Album instances with the same ID, title, year, and artist ID,
     and asserts that they are considered equal using the equality operator.
     """
-    album1 = Album(1, "Test title", 1999, 1)
-    album2 = Album(1, "Test title", 1999, 1)
+    album1 = Album(1, "Test title", 1999, 1, "Test artist")
+    album2 = Album(1, "Test title", 1999, 1, "Test artist")
     assert album1 == album2

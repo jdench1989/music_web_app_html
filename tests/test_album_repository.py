@@ -10,8 +10,8 @@ def test_get_all_albums(db_connection):
     repository = AlbumRepository(db_connection)
     albums = repository.all()
     assert albums == [
-        Album(1, "Doolittle", 1989, 1),
-        Album(2, "Surfer Rosa", 1988, 1),
+        Album(1, "Doolittle", 1989, 1, "Pixies"),
+        Album(2, "Surfer Rosa", 1988, 1, "Pixies"),
         # Album(3, "Waterloo", 1974, 2),
         # Album(4, "Super Trouper", 1980, 2),
         # Album(5, "Bossanova", 1990, 1),
@@ -32,7 +32,7 @@ def test_find_single_album_by_id(db_connection):
     db_connection.seed("seeds/music_library.sql")
     repository = AlbumRepository(db_connection)
     album_1 = repository.find(1)
-    assert album_1 == Album(1, "Doolittle", 1989, 1)
+    assert album_1 == Album(1, "Doolittle", 1989, 1, "Pixies")
 
 """
 When we call AlbumRepository.create()
@@ -56,4 +56,4 @@ def test_delete_method(db_connection):
     repository.delete(1)
     albums = repository.all()
     assert len(albums) == 1
-    assert Album(1, "Doolittle", 1989, 1) not in albums
+    assert Album(1, "Doolittle", 1989, 1, "Pixies") not in albums

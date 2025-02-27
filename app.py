@@ -15,6 +15,13 @@ def get_all_albums():
     albums = repository.all()
     return render_template("albums/index.html", albums=albums)
 
+@app.route('/albums/<id>', methods=['GET'])
+def get_album_by_id(id):
+    connection = get_flask_database_connection(app)
+    repository = AlbumRepository(connection)
+    album = repository.find(id)
+    return render_template("albums/album.html", album=album)
+
 @app.route('/albums', methods=['POST'])
 def create_album():
     if not all(key in request.form for key in ['title', 'release_year', 'artist_id']):

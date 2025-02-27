@@ -18,6 +18,14 @@ def test_get_all_albums(db_connection, page, test_web_address):
         "Released: 1988"
     ])
 
+def test_get_album_by_id(db_connection, page, test_web_address):
+    db_connection.seed("seeds/music_library.sql")
+    page.goto(f"{test_web_address}/albums/1")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Doolittle")
+    p_tag = page.locator("p")
+    expect(p_tag).to_have_text("Released: 1989\nArtist: Pixies")
+    
 def test_post_albums_any_fields_missing(db_connection, web_client):
     db_connection.seed("seeds/music_library.sql")
     response = web_client.post('/albums')
@@ -36,14 +44,6 @@ def test_post_albums_any_fields_missing(db_connection, web_client):
     assert response.status_code == 400
     assert response.data.decode('utf-8') == "Must include album title, release_year and artist id."
 
-"""
-POST /albums
-Parameters:
-    title: Voyage
-    release_year: 2022
-    artist_id: 2
-Expected response (200 OK)
-"""
 def test_post_albums_valid_entry(db_connection, web_client, page, test_web_address):
     db_connection.seed("seeds/music_library.sql")
     post_response = web_client.post('/albums', data={
@@ -68,19 +68,13 @@ def test_post_albums_valid_entry(db_connection, web_client, page, test_web_addre
         "Released: 1988",
         "Released: 2022"
     ])
-        
+
 def test_get_artists(db_connection, web_client):
     db_connection.seed("seeds/music_library.sql")
     response = web_client.get('/artists')
     assert response.status_code == 200
     assert response.data.decode('utf-8') == "Pixies, ABBA, Taylor Swift, Nina Simone"
 
-"""
-when we run a POST to /artists
-with a new artist
-then we expect a 200 response
-AND we expect the artist to be added to the database
-"""
 def test_add_artist(db_connection, web_client):
     db_connection.seed("seeds/music_library.sql")
     post_response = web_client.post('/artists', data={'name' : 'BeeJees', 'genre': 'Funk'})

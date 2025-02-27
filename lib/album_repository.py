@@ -6,16 +6,34 @@ class AlbumRepository():
         self._connection = connection
     
     def all(self):
-        rows = self._connection.execute("SELECT * FROM albums")
+        rows = self._connection.execute(
+            "SELECT " \
+                "al.id as id, " \
+                "al.title, " \
+                "al.release_year, " \
+                "al.artist_id, " \
+                "ar.name as artist "\
+            "FROM albums al " \
+            "JOIN artists ar ON al.artist_id = ar.id"
+            )
         albums = []
         for row in rows:
-            album = Album(row["id"], row["title"], row["release_year"], row["artist_id"])
+            album = Album(row["id"], row["title"], row["release_year"], row["artist_id"], row["artist"])
             albums.append(album)
         return albums
     
     def find(self, album_id):
-        row = self._connection.execute("SELECT * FROM albums WHERE id = %s", [album_id])
-        album = Album(row[0]["id"], row[0]["title"], row[0]["release_year"], row[0]["artist_id"])
+        row = self._connection.execute(
+            "SELECT " \
+                "al.id as id, " \
+                "al.title, " \
+                "al.release_year, " \
+                "al.artist_id, " \
+                "ar.name as artist "\
+            "FROM albums al " \
+            "JOIN artists ar ON al.artist_id = ar.id " \
+            "WHERE al.id = %s", [album_id])
+        album = Album(row[0]["id"], row[0]["title"], row[0]["release_year"], row[0]["artist_id"], row[0]["artist"])
         return album
     
     def create(self, title, release_year, artist_id):
