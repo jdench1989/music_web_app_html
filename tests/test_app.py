@@ -58,20 +58,43 @@ def test_post_albums_valid_entry(db_connection, web_client, page, test_web_addre
         "Voyage by ABBA"
     ])
 
-def test_get_artists(db_connection, web_client):
+def test_get_all_artists(db_connection, page, test_web_address):
     db_connection.seed("seeds/music_library.sql")
-    response = web_client.get('/artists')
-    assert response.status_code == 200
-    assert response.data.decode('utf-8') == "Pixies, ABBA, Taylor Swift, Nina Simone"
+    page.goto(f"{test_web_address}/artists")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Artists")
+    a_tags = page.locator("a")
+    expect(a_tags).to_have_text([
+        "Pixies",
+        "ABBA",
+        "Taylor Swift",
+        "Nina Simone"
+    ])
 
-def test_add_artist(db_connection, web_client):
+def test_get_artist_by_id(db_connection, page, test_web_address):
     db_connection.seed("seeds/music_library.sql")
-    post_response = web_client.post('/artists', data={'name' : 'BeeJees', 'genre': 'Funk'})
-    get_response = web_client.get('/artists')
+    page.goto(f"{test_web_address}/artists/1")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Pixies")
+    p_tag = page.locator("p")
+    expect(p_tag).to_have_text("Genre: Rock")
+    
+def test_add_artist(db_connection, web_client, page, test_web_address):
+    db_connection.seed("seeds/music_library.sql")
+    post_response = web_client.post('/artists', data={'name' : 'Bee Gees', 'genre': 'Funk'})
     assert post_response.status_code == 200
     assert post_response.data.decode('utf-8') == ''
-    assert get_response.status_code == 200
-    assert get_response.data.decode('utf-8') == "Pixies, ABBA, Taylor Swift, Nina Simone, BeeJees"
+    page.goto(f"{test_web_address}/artists")
+    h1_tag = page.locator("h1")
+    expect(h1_tag).to_have_text("Artists")
+    a_tags = page.locator("a")
+    expect(a_tags).to_have_text([
+        "Pixies",
+        "ABBA",
+        "Taylor Swift",
+        "Nina Simone",
+        "Bee Gees"
+    ])
 
 def test_add_artists_any_fields_missing(db_connection, web_client):
     db_connection.seed("seeds/music_library.sql")

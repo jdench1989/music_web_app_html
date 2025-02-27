@@ -39,9 +39,15 @@ def get_all_artists():
     connection = get_flask_database_connection(app)
     repository = ArtistRepository(connection)
     artists = repository.all()
-    return Response(response=", ".join([f"{artist.name}" for artist in artists]),
-                    status=200)
-    
+    return render_template("artists/index.html", artists=artists)
+
+@app.route('/artists/<id>', methods=['GET'])
+def get_artist_by_id(id):
+    connection = get_flask_database_connection(app)
+    repository = ArtistRepository(connection)
+    artist = repository.find(id)
+    return render_template("artists/artist.html", artist=artist)
+
 @app.route('/artists', methods=["POST"])
 def create_artist():
     if not all(key in request.form for key in ['name', 'genre']):
