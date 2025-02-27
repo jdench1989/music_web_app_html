@@ -7,15 +7,10 @@ def test_get_all_albums(db_connection, page, test_web_address):
     page.goto(f"{test_web_address}/albums")
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Albums")
-    h2_tags = page.locator("h2")
-    expect(h2_tags).to_have_text([
-        "Title: Doolittle",
-        "Title: Surfer Rosa",
-    ])
-    p_tags = page.locator("p")
-    expect(p_tags).to_have_text([
-        "Released: 1989",
-        "Released: 1988"
+    a_tags = page.locator("a")
+    expect(a_tags).to_have_text([
+        "Doolittle by Pixies",
+        "Surfer Rosa by Pixies"
     ])
 
 def test_get_album_by_id(db_connection, page, test_web_address):
@@ -56,17 +51,11 @@ def test_post_albums_valid_entry(db_connection, web_client, page, test_web_addre
     page.goto(f"{test_web_address}/albums")
     h1_tag = page.locator("h1")
     expect(h1_tag).to_have_text("Albums")
-    h2_tags = page.locator("h2")
-    expect(h2_tags).to_have_text([
-        "Title: Doolittle",
-        "Title: Surfer Rosa",
-        "Title: Voyage"
-    ])
-    p_tags = page.locator("p")
-    expect(p_tags).to_have_text([
-        "Released: 1989",
-        "Released: 1988",
-        "Released: 2022"
+    a_tags = page.locator("a")
+    expect(a_tags).to_have_text([
+        "Doolittle by Pixies",
+        "Surfer Rosa by Pixies",
+        "Voyage by ABBA"
     ])
 
 def test_get_artists(db_connection, web_client):

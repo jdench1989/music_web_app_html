@@ -7,11 +7,12 @@
 </head>
 <body>
     <h1>Albums</h1>
+    <ul>
     {% for album in albums %}
-    <article>
-        <h2>Title: {{ album.title }}</h2>
-        <p>Released: {{ album.release_year }}</p>
-    </article>
+        <li>
+            <a href="/albums/{{album.id}}">{{album.title}} by {{album.artist}}</a>
+        </li>
     {% endfor %}
+    </ul>
 </body>
 </html>
