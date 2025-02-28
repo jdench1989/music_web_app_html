@@ -59,7 +59,8 @@ def test_get_all_artists(db_connection, page, test_web_address):
         "Pixies",
         "ABBA",
         "Taylor Swift",
-        "Nina Simone"
+        "Nina Simone",
+        "Add a new artist"
     ])
 
 def test_get_artist_by_id(db_connection, page, test_web_address):
@@ -70,33 +71,22 @@ def test_get_artist_by_id(db_connection, page, test_web_address):
     p_tag = page.locator("p")
     expect(p_tag).to_have_text("Genre: Rock")
     
-def test_add_artist(db_connection, web_client, page, test_web_address):
+def test_create_artist(db_connection, page, test_web_address):
     db_connection.seed("seeds/music_library.sql")
-    post_response = web_client.post('/artists', data={'name' : 'Bee Gees', 'genre': 'Funk'})
-    assert post_response.status_code == 200
-    assert post_response.data.decode('utf-8') == ''
-    page.goto(f"{test_web_address}/artists")
-    h1_tag = page.locator("h1")
-    expect(h1_tag).to_have_text("Artists")
-    a_tags = page.locator("a")
-    expect(a_tags).to_have_text([
-        "Pixies",
-        "ABBA",
-        "Taylor Swift",
-        "Nina Simone",
-        "Bee Gees"
-    ])
+    page.goto(f"http://{test_web_address}/artists")
+    page.click("text=Add a new artist")
+    page.fill("input[name='name']", "Adele")
+    page.fill("input[name='genre']", "Pop")
+    page.click("text=Create artist")
+    title_element = page.locator(".t-title")
+    expect(title_element).to_have_text("Adele")
+    genre_element = page.locator(".t-genre")
+    expect(genre_element).to_have_text("Genre: Pop")
 
-def test_add_artists_any_fields_missing(db_connection, web_client):
+def test_create_artist_error(db_connection, page, test_web_address):
     db_connection.seed("seeds/music_library.sql")
-    response = web_client.post('/artists')
-    assert response.status_code == 400
-    assert response.data.decode('utf-8') == "Must include artist name and genre."
-    
-    response = web_client.post('/artists', data={"name": "The Beatles"})
-    assert response.status_code == 400
-    assert response.data.decode('utf-8') == "Must include artist name and genre."
-    
-    response = web_client.post('/artists', data={"genre": "Rock"})
-    assert response.status_code == 400
-    assert response.data.decode('utf-8') == "Must include artist name and genre."
+    page.goto(f"http://{test_web_address}/artists")
+    page.click("text=Add a new artist")
+    page.click("text=Create artist")
+    errors = page.locator(".t-errors")
+    expect(errors).to_have_text("There were errors with your submission: Name can't be blank, Genre can't be blank")

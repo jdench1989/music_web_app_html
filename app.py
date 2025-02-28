@@ -57,15 +57,19 @@ def get_artist_by_id(id):
 
 @app.route('/artists', methods=["POST"])
 def create_artist():
-    if not all(key in request.form for key in ['name', 'genre']):
-        return "Must include artist name and genre.", 400
-    name = request.form['name']
-    genre = request.form['genre']
     connection = get_flask_database_connection(app)
     repository = ArtistRepository(connection)
-    repository.create(name, genre)
-    return Response(status=200)
+    name = request.form['name']
+    genre = request.form['genre']
+    artist = Artist(None, name, genre,)
+    if not artist.is_valid():
+        return render_template('artists/new.html', artist=artist, errors=artist.generate_errors()), 400
+    artist = repository.create(artist)
+    return redirect(f"/artists/{artist.id}")
 
+@app.route('/artists/new', methods=['GET'])
+def get_new_artist_form():
+    return render_template("artists/new.html")
 
 # These lines start the server if you run this file directly
 # They also start the server configured to use the test database
